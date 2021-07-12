@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: app4-ingress
+ namespace: app4
+ annotations:
+   kubernetes.io/ingress.class: nginx
+spec:
+ rules:
+ - host: app4k8s.premdesigns.in
+   http:
+     paths:
+     - path:
+       backend:
+         serviceName: app4-svc
+         servicePort: 80
