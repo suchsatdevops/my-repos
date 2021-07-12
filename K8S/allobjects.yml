@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: app4
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app4-svc
+  namespace: app4
+spec:
+  selector: 
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: app4-ingress
+ namespace: app4
+ annotations:
+   kubernetes.io/ingress.class: nginx
+spec:
+ rules:
+ - host: app4k8s.premdesigns.in
+   http:
+     paths:
+     - path:
+       backend:
+         serviceName: app4-svc
+         servicePort: 80
